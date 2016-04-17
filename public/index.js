@@ -43,13 +43,63 @@ var pollChart;
               }
               $scope.checkPages = function()
               {
+
+                MyYelpAPI.retrieveYelp("", "", $scope.url, function(data) {
+                  //  $scope.businesses = data.businesses;
+                  $scope.name = data.name;
+                  //var url = 'http://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
+                  //$scope.url = url.replace(/\s+/g, '-').toLowerCase();
+                  $scope.city = data.location.city;
+                    $scope.place = data.name;
+                  var data = {
+                    "url": $scope.url,
+                    "num": $scope.num
+                  }
+
+                  $http({
+                    url: "http://localhost:3000",
+                    method: "POST",
+                    data: data,
+                    dataType: 'jsonp'
+                  }).success(function(response) {
+                    console.log(response);
+                    var totals = [];
+                    totals['mixed'] = 0;
+                    totals['positive'] = 0;
+                    totals['negative'] = 0;
+                    totals['neutral'] = 0;
+                    var terms = {};
+                    for(var i=0; i < response['keywords']['results'].length; i++) {
+                      if(response['keywords']['results'][i]['sentiment']['mixed']) {
+                        totals['mixed']++;
+                      } else {
+                        totals[response['keywords']['results'][i]['sentiment']['type']]++;
+                      }
+                      terms[response['keywords']['results'][i]['text']] = {'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance']};
+                    }
+
+                    var total = totals['mixed'] + totals['positive'] + totals['negative'];
+                    piePositive = totals['positive']; //(totals['positive']/total * 100).toFixed(0);
+                    pieNegative = totals['negative'];//(totals['negative']/total * 100).toFixed(0);
+                    pieMixed = totals['negative']; //(totals['mixed']/total * 100).toFixed(0);
+
+                    pollChart.series[0].setData([piePositive, pieNegative, pieMixed]);
+
+                    // console.log('Stuff:' + piePositive + 'Neg: ' + pieNegative + ' Mixed: ' + pieMixed );
+                    // console.log(total);
+                    // console.log(totals);
+                    // console.log(terms);
+                  });
+
+                })
+
                 pollChart.redraw();
                 console.log('redraw');
               }
 
               $scope.checkCity = function()
               {
-                MyYelpAPI.retrieveYelp($scope.city, $scope.place, function(data) {
+                MyYelpAPI.retrieveYelp($scope.city, $scope.place, "", function(data) {
                   //  $scope.businesses = data.businesses;
                   $scope.name = data.name;
                   var url = 'http://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
@@ -74,13 +124,13 @@ var pollChart;
                     totals['negative'] = 0;
                     totals['neutral'] = 0;
                     var terms = {};
-                    for(var i=0; i < response.length; i++) {
-                      if(response[i]['sentiment']['mixed']) {
+                    for(var i=0; i < response['keywords']['results'].length; i++) {
+                      if(response['keywords']['results'][i]['sentiment']['mixed']) {
                         totals['mixed']++;
                       } else {
-                        totals[response[i]['sentiment']['type']]++;
+                        totals[response['keywords']['results'][i]['sentiment']['type']]++;
                       }
-                      terms[response[i]['text']] = {'wordCount': 0, 'relevance': response[i]['relevance']};
+                      terms[response['keywords']['results'][i]['text']] = {'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance']};
                     }
 
                     var total = totals['mixed'] + totals['positive'] + totals['negative'];
@@ -103,10 +153,21 @@ var pollChart;
 
             }]).factory("MyYelpAPI", function($http) {
               return {
-                "retrieveYelp": function(city, place, callback) {
+                "retrieveYelp": function(city, place, givenUrl, callback) {
                   var method = 'GET';
-                  var url = 'http://api.yelp.com/v2/business/' + place + '-' + city;
+                  var url = "";
+                  if(!givenUrl)
+                  {
+                  url = 'http://api.yelp.com/v2/business/' + place + '-' + city;
                   url = url.replace(/\s+/g, '-').toLowerCase();
+                }
+                else
+                {
+                  var end = givenUrl.split("biz/")[1];
+                  url = 'http://api.yelp.com/v2/business/' + end;
+                  url = url.replace(/\s+/g, '-').toLowerCase();
+
+                }
                   var params = {
                     callback: 'angular.callbacks._0',
                               //location: name,
@@ -121,7 +182,14 @@ var pollChart;
                       var tokenSecret = 'kRWZv_OO8-pwG4mdIjr0SxkO5c0'; //Token Secret
                       var signature = oauthSignature.generate(method, url, params, consumerSecret, tokenSecret, { encodeSignature: false});
                       params['oauth_signature'] = signature;
-                      $http.jsonp(url, {params: params}).success(callback);
+                      $http.jsonp(url, {params: params}).success(callback).error(
+
+                          function (data,status,headers, config)
+                          {
+                            alert("could not find Business. Try again");
+                            location.reload();
+                          }
+                        );
                     }
                   }
                 });

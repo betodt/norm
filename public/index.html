@@ -10,11 +10,11 @@
       <script src="index.js"></script>
 
  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+  <link rel="stylesheet" type="type/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
   <link rel="stylesheet" type="type/css" href="index.css">
-   <link rel="stylesheet" href="animate.min.css">
+   <!-- <link rel="stylesheet" href="animate.min.css"> -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
  
@@ -27,9 +27,7 @@
 	    <div class="nav-wrapper blue-grey">
 	      <a href="#" class="brand-logo center">NORM</a>
 	      <ul id="nav-mobile" class="left hide-on-med-and-down">
-	        <li><a href="sass.html">Sass</a></li>
-	        <li><a href="badges.html">Components</a></li>
-	        <li><a href="collapsible.html">JavaScript</a></li>
+	        <li><a href="sass.html">Upgrade to Pro!</a></li>
 	      </ul>
 	    </div>
   </nav>
@@ -39,7 +37,7 @@
 		<div class="row">
         	<div class="input-field col s12 l10">
 	          	<i class="material-icons prefix">search</i>
-	         	<input ng-model = "url" id="icon_prefix" type="text" class="validate">
+	         	<input ng-model = "url" id="icon_prefix" type="text" class="validate" placeholder="Enter a URL">
 	         	<!-- <label for="icon_prefix">Enter a URL</label> -->
         	</div>
           <!-- <div class="input-field col s12 l5">
@@ -58,13 +56,13 @@
 
           <div class="input-field col s12 l5">
               <i class="material-icons prefix">search</i>
-            <input ng-model = "city" id="icon_prefix" type="text" class="validate">
-            <label for="icon_prefix">Enter a City</label>
+            <input ng-model = "city" id="icon_prefix" type="text" class="validate" placeholder="Enter a City">
+            <!-- <label for="icon_prefix">Enter a City</label> -->
           </div>
           <div class="input-field col s12 l5">
               <i class="material-icons prefix">search</i>
-            <input ng-model = "place" id="icon_prefix" type="text" class="validate">
-            <label for="icon_prefix">Enter a Place</label>
+            <input ng-model = "place" id="icon_prefix" type="text" class="validate" placeholder="Enter a Place">
+            <!-- <label for="icon_prefix">Enter a Place</label> -->
           </div>
           <div class="input-field col s12 l2">
               <button ng-click = "checkCity()" class="btn waves-effect waves-light" type="submit" name="action">

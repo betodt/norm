@@ -69,32 +69,57 @@ var alchemy = new AlchemyAPI('64be19b040593b9446df70e85ee2348248b2df2a');
 function example(req, res) {
 	var output = {};
 	//Start the analysis chain
-	keywords(req, res, output);
+	text(req, res, output);
+}
+
+function text(req, res, output) {
+	demo_text = "";
+	// for(var i = 0; i < 101; i += 20) {
+	// 	newUrl = myUrl + "?start=" + i;
+		alchemy.text(req.body.url, {useMetadata:1}, function(err, response){
+			console.log(response.text);
+			demo_text += response.text + " ";
+			escape(demo_text);
+			keywords(req, res, output);
+		});
+	// }
 }
 
 function keywords(req, res, output) {
-	console.log("keywords: "+req.body.url);
+	console.log("keywords: "+ demo_text);
 	// var myUrl = "https://www.yelp.com/biz/ikes-place-san-francisco";
-
-	// TODO
-
-	// myText = "";
-	// for(var i = 0; i < 101; i += 20) {
-	// 	newUrl = myUrl + "?start=" + i;
-	// 	alchemy.text(newUrl, {}, function(err, response){
-	// 		// console.log(response.text);
-	// 		myText += response.text + " ";
-	// 	});
-	// }
-	// console.log(myText.length);
-	// 
-	//  end TODO
 	
 	alchemy.keywords(req.body.url, {url:myUrl,'sentiment':1}, function(err,response) {
-			// console.log("Sentiment: " + response["docKeywords"]["type"]);
+			var reviews = {};
+			console.log(response['keywords']);
+			for(var i = 0; i < response['keywords'].length; i++) {
+				var delta = 50;
+				var lo, hi;
+				var index = demo_text.indexOf(response['keywords'][i]['text']);
+
+				for(lo=index; lo > 0; lo--){
+					if(demo_text[lo] == '.')
+						break;
+					if(index-lo > delta)
+						break;
+				}
+				for(hi = index; hi<demo_text.length; hi++) {
+					if(demo_text[hi] == '.')
+						break;
+					if(hi-index > delta)
+						break;
+				}
+				var review = demo_text.substring(lo, hi).replace(/^\W+|\W+$/gm,'');
+				console.log(review);
+				reviews[response['keywords'][i]['text']] = review;
+				// console.log(response['keywords'][i]['text']);
+				// console.log(new RegExp(response['keywords']['text'],'i'));
+				console.log((demo_text.match(new RegExp(response['keywords'][i]['text']))||[]).length);
+			}
 			console.log(JSON.stringify(response, null, 4).length);
+			output['reviews'] = reviews;
 			output['keywords'] = { text:myUrl, response:JSON.stringify(response,null,4), results:response['keywords'] };
-			res.send(response['keywords']);
+			res.send(output);
 	});
 }
 
