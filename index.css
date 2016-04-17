@@ -79,6 +79,10 @@ footer{
  	width:20%;
  }
 
+td{
+	align: right;
+}
+
  #mixed h5{
  	margin:0px;
 	padding:0px;
@@ -108,6 +112,8 @@ footer{
 	clear:both;
 	margin-top: 0px;
 	padding-top:5px;
+	padding-right: 20px;
+	padding-left: 20px;
 	border-top: solid 4px white;
 }
 

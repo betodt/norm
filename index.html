@@ -77,34 +77,98 @@
       			</div><!-- end of resultBar-->
       				<div id = "analytics" class="card">
       					<div id= "positiveView">
-      						Positive View
-      						<ul>
-      							<li> Positive Word </li>
-      							<li> Positive Word </li>
-      							<li> Positive Word </li>
-      							<li> Positive Word </li>
-      							<li> Positive Word </li>
-      						</ul>
+      						<table class="striped">
+      						    <thead>
+      						       <tr>
+      						          <th class="center-align" data-field="positiveWords">Positive Words</th>
+      						          <th class="center-align" data-field="wordCount">Word Count</th>
+      						          <th class="center-align" data-field="relevance">Relevance</th>
+      						         </tr>
+      						       </thead>
+
+      						       <tbody>
+      						         <tr>
+      						           <td class="center-align">{{keyword}}</td>
+      						           <td class="center-align">{{wordCount}}</td>
+      						           <td class="center-align">{{relevanceScore}}</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Happy</td>
+      						           <td class="center-align">4</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Cupcakes</td>
+      						           <td class="center-align">5</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						       </tbody>
+      						     </table>
+      						     <hr>
+      						     <h5>Most frequent word: {{freqWord}}</h5>
+
       					</div>
       					<div id ="mixedView">
-      						Mixed View
-      						<ul>
-      							<li> Mixed Word </li>
-      							<li> Mixed Word </li>
-      							<li> Mixed Word </li>
-      							<li> Mixed Word </li>
-      							<li> Mixed Word </li>
-      						</ul>
+      						<table class="striped">
+      						    <thead>
+      						       <tr>
+      						          <th class="center-align" data-field="mixedWords">Mixed Keywords</th>
+      						          <th class="center-align" data-field="wordCount">Word Count</th>
+      						          <th class="center-align" data-field="relevance">Relevance</th>
+      						         </tr>
+      						       </thead>
+
+      						       <tbody>
+      						         <tr>
+      						           <td class="center-align">{{keyword}}</td>
+      						           <td class="center-align">{{wordCount}}</td>
+      						           <td class="center-align">{{relevanceScore}}</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Happy</td>
+      						           <td class="center-align">4</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Cupcakes</td>
+      						           <td class="center-align">5</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						       </tbody>
+      						     </table>
+      						      <hr>
+      						     <h5>Most frequent word: {{freqWord}}</h5>
     					</div>
       					<div id="negativeView">
-      						Negative View
-      						<ul>
-      							<li> Negative Word </li>
-      							<li> Negative Word </li>
-      							<li> Negative Word </li>
-      							<li> Negative Word </li>
-      							<li> Negative Word </li>
-      						</ul>
+      						<table class="striped responsive-table">
+      						    <thead>
+      						       <tr>
+      						          <th class="center-align" data-field="negWords">Negative Keywords</th>
+      						          <th class="center-align" data-field="wordCount">Word Count</th>
+      						          <th class="center-align" data-field="relevance">Relevance</th>
+      						         </tr>
+      						       </thead>
+
+      						       <tbody>
+      						         <tr>
+      						           <td class="center-align">{{keyword}}</td>
+      						           <td class="center-align">{{wordCount}}</td>
+      						           <td class="center-align">{{relevanceScore}}</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Happy</td>
+      						           <td class="center-align">4</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						         <tr>
+      						           <td class="center-align">Cupcakes</td>
+      						           <td class="center-align">5</td>
+      						           <td class="center-align">3</td>
+      						         </tr>
+      						       </tbody>
+      						     </table>
+      						      <hr>
+      						     <h5>Most frequent word: {{freqWord}}</h5>
       					</div>
       				 </div>
       			</div>
