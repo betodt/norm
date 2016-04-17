@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+        <script src="https://cdn.rawgit.com/bettiolo/oauth-signature-js/master/dist/oauth-signature.min.js"></script>
+    </head>
+    <body ng-app="plunker">
+        <div  ng-controller="MainCtrl">
+          <input type = "text" ng-model="city" placeholder="City"> <button ng-click ="checkCity()"> Search </button>
+          <br />
+            <input type = "text" ng-model="place" placeholder="Place">
+            <br />
+            <br />
+            <button style = "width: 550px" ng-click = "checkPages()"> BETO CLICK THIS </button>
+
+            <select ng-model="num" convert-to-number>
+
+                <option value="0">Zero</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+
+              </select>
+              <br/>
+
+            <p><date-input name="info.name" message="info.message"></date-input></p>
+            <ul>
+                <li data-ng-repeat="business in businesses">
+                    {{business.url}}
+                </li>
+                Name: {{name}}
+                <br />
+                Url : {{url}}
+                <br />
+                City: {{city}}
+                <br />
+                num: {{num}}
+                <br />
+                REsult:{{numResult}}
+            </ul>
+        </div>
+        <script>
+            function randomString(length, chars) {
+                var result = '';
+                for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+                return result;
+            }
+
+            var app = angular.module('plunker', []);
+
+            app.controller('MainCtrl', ['$scope', '$http', 'MyYelpAPI', function($scope, $http, MyYelpAPI) {
+                $scope.city = "";
+                $scope.url = "";
+                $scope.numResult = "";
+                $scope.businesses = [];
+                /*
+                MyYelpAPI.retrieveYelp($scope.city, function(data) {
+                    //$scope.businesses = data.businesses;
+                    $scope.thing = data.url;
+
+                });
+                  */
+                function loadCourses()
+                  {
+
+                      var data = {
+                          "url": $scope.url,
+                          "num": $scope.num
+                          }
+
+                          $http({
+                              url: "http://localhost:3000",
+                              method: "POST",
+                              data: data,
+                              dataType: 'jsonp'
+                            }).success(function(response) {
+                                console.log(response);
+                              $scope.numResult = response.resp;
+                            });
+
+
+                    }
+                    $scope.checkPages = function()
+                    {
+                      loadCourses();
+                    }
+
+                $scope.checkCity = function()
+                {
+                  MyYelpAPI.retrieveYelp($scope.city, $scope.place, function(data) {
+                    //  $scope.businesses = data.businesses;
+                          $scope.name = data.name;
+                          var url = data.url;
+                          var lowerCity = $scope.city.toLowerCase();
+                          $scope.url = url.substring(0, url.indexOf(lowerCity) + lowerCity.length);
+                          $scope.city = data.location.city;
+
+                  });
+                }
+
+            }]).factory("MyYelpAPI", function($http) {
+                return {
+                    "retrieveYelp": function(city, place, callback) {
+                        var method = 'GET';
+                        var url = 'http://api.yelp.com/v2/business/' + place + '-' + city;
+                        url = url.replace(/\s+/g, '-').toLowerCase();
+                        var params = {
+                                callback: 'angular.callbacks._0',
+                                //location: name,
+                                oauth_consumer_key: 'qMj5sRZLW9kQUi38bKOwUw', //Consumer Key
+                                oauth_token: 'RhLXlRw4QJ4HQmjf_cex5DhYT72AwUOf', //Token
+                                oauth_signature_method: "HMAC-SHA1",
+                                oauth_timestamp: new Date().getTime(),
+                                oauth_nonce: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                                //term: 'food'
+                            };
+                        var consumerSecret = 'uTaJUJ2biBlQ1KeIWWgOcgQ4wq0'; //Consumer Secret
+                        var tokenSecret = 'kRWZv_OO8-pwG4mdIjr0SxkO5c0'; //Token Secret
+                        var signature = oauthSignature.generate(method, url, params, consumerSecret, tokenSecret, { encodeSignature: false});
+                        params['oauth_signature'] = signature;
+                        $http.jsonp(url, {params: params}).success(callback);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
