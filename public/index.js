@@ -2,6 +2,9 @@ var piePositive = 33.00;
 var pieNegative = 33.00;
 var pieMixed = 33.00;
 var pollChart;	
+var posPercentage;
+var negPercentage;
+var mixedPercentage;
           function randomString(length, chars) {
             var result = '';
             for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
@@ -15,6 +18,8 @@ var pollChart;
             $scope.url = "";
             $scope.numResult = "";
             $scope.businesses = [];
+
+            $scope.loadedData = false;
               /*
               MyYelpAPI.retrieveYelp($scope.city, function(data) {
                   //$scope.businesses = data.businesses;
@@ -41,6 +46,7 @@ var pollChart;
 
 
               }
+             
               $scope.checkPages = function()
               {
 
@@ -92,9 +98,12 @@ var pollChart;
                   });
 
                 })
-
                 pollChart.redraw();
                 console.log('redraw');
+              
+                
+                
+
               }
 
               $scope.checkCity = function()
@@ -105,6 +114,9 @@ var pollChart;
                   var url = 'http://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
                   $scope.url = url.replace(/\s+/g, '-').toLowerCase();
                   $scope.city = data.location.city;
+                  $scope.data = data;
+                  $scope.loadedData = true;
+                  $scope.terms = {};
 
                   var data = {
                     "url": $scope.url,
@@ -119,35 +131,48 @@ var pollChart;
                   }).success(function(response) {
                     console.log(response);
                     var totals = [];
-                    totals['mixed'] = 0;
-                    totals['positive'] = 0;
-                    totals['negative'] = 0;
-                    totals['neutral'] = 0;
                     var terms = {};
+                    terms['positive']=[];
+                    terms['negative']=[];
+                    terms['mixed']=[];
+                    terms['neutral']=[];
                     for(var i=0; i < response['keywords']['results'].length; i++) {
                       if(response['keywords']['results'][i]['sentiment']['mixed']) {
-                        totals['mixed']++;
+                        terms['mixed'].push({'word':response['keywords']['results'][i]['text'],'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance'], 'review': response['reviews'][response['keywords']['results'][i]['text']]});
                       } else {
-                        totals[response['keywords']['results'][i]['sentiment']['type']]++;
+                        terms[response['keywords']['results'][i]['sentiment']['type']].push({'word':response['keywords']['results'][i]['text'],'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance'], 'review': response['reviews'][response['keywords']['results'][i]['text']]});
                       }
-                      terms[response['keywords']['results'][i]['text']] = {'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance']};
+                      // terms[response['keywords']['results'][i]['text']] = {'wordCount': 0, 'relevance': response['keywords']['results'][i]['relevance']};
                     }
 
-                    var total = totals['mixed'] + totals['positive'] + totals['negative'];
-                    piePositive = totals['positive']; //(totals['positive']/total * 100).toFixed(0);
-                    pieNegative = totals['negative'];//(totals['negative']/total * 100).toFixed(0);
-                    pieMixed = totals['negative']; //(totals['mixed']/total * 100).toFixed(0);
+                    $scope.terms = terms;
+                    // alert(terms['positive'].length);
+                    // alert($scope.terms.positive.length)
+                    var total = terms['mixed'].length + terms['positive'].length + terms['negative'].length;
+                    piePositive = terms['positive'].length; //(totals['positive']/total * 100).toFixed(0);
+                    pieNegative = terms['negative'].length;//(totals['negative']/total * 100).toFixed(0);
+                    pieMixed = terms['mixed'].length; //(totals['mixed']/total * 100).toFixed(0);
+                    
+                    //get percentage
+                    posPercentage = parseInt((piePositive/total)*100);
+                    negPercentage = parseInt((pieNegative/total)*100);
+                    mixedPercentage = parseInt((pieMixed/total)*100);
+
+                  $scope.posPercentage = posPercentage;
+                  $scope.negPercentage = negPercentage;
+                  $scope.mixedPercentage = 100 - (negPercentage+posPercentage);
+
+                    console.log("this is pos % "+posPercentage);
 
                     pollChart.series[0].setData([piePositive, pieNegative, pieMixed]);
 
                     // console.log('Stuff:' + piePositive + 'Neg: ' + pieNegative + ' Mixed: ' + pieMixed );
                     // console.log(total);
                     // console.log(totals);
-                    // console.log(terms);
+                    console.log($scope.terms);
                   });
 
                 })
-                
 
               }
 
@@ -186,7 +211,7 @@ var pollChart;
 
                           function (data,status,headers, config)
                           {
-                            alert("could not find Business. Try again");
+                            alert("Could not find Business. Try again");
                             location.reload();
                           }
                         );
@@ -197,6 +222,9 @@ var pollChart;
 
     $(document).ready(function() {
     	$('select').material_select();
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
   	});
          
 	function showPositive(){
@@ -242,7 +270,7 @@ var pollChart;
                 type: 'pie'
             },
             title: {
-                text: 'User Reviews Toward {Restaurant Name}'
+                text: 'Distribution of Keyword Connotations'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
