@@ -52,7 +52,7 @@ footer{
  #positive{
  	float: left;
  	height: 100%;
- 	width:50%;
+ 	
  }
 
 #positive h5{
@@ -64,7 +64,7 @@ footer{
  #negative{
  	float: left;
  	height: 100%;
- 	width:30%;
+ 	
  }
 
  #negative h5{
@@ -76,7 +76,7 @@ footer{
  #mixed{
  	float: left;
  	height: 100%;
- 	width:20%;
+ 	
  }
 
 td{
@@ -115,6 +115,12 @@ td{
 	padding-right: 20px;
 	padding-left: 20px;
 	border-top: solid 4px white;
+	max-height:60%;
+	overflow:scroll;
+}
+
+img#bizImg{
+	width:50%;
 }
 
 

@@ -2,6 +2,9 @@ var piePositive = 33.00;
 var pieNegative = 33.00;
 var pieMixed = 33.00;
 var pollChart;	
+var posPercentage;
+var negPercentage;
+var mixedPercentage;
           function randomString(length, chars) {
             var result = '';
             for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
@@ -15,6 +18,8 @@ var pollChart;
             $scope.url = "";
             $scope.numResult = "";
             $scope.businesses = [];
+
+            $scope.loadedData = false;
               /*
               MyYelpAPI.retrieveYelp($scope.city, function(data) {
                   //$scope.businesses = data.businesses;
@@ -41,20 +46,30 @@ var pollChart;
 
 
               }
+             
               $scope.checkPages = function()
               {
+                
                 pollChart.redraw();
                 console.log('redraw');
+              
+                
+                
+
               }
 
               $scope.checkCity = function()
               {
+
                 MyYelpAPI.retrieveYelp($scope.city, $scope.place, function(data) {
                   //  $scope.businesses = data.businesses;
                   $scope.name = data.name;
                   var url = 'http://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
                   $scope.url = url.replace(/\s+/g, '-').toLowerCase();
                   $scope.city = data.location.city;
+                  $scope.data = data;
+                  $scope.loadedData = true;
+                  $scope.terms = {};
 
                   var data = {
                     "url": $scope.url,
@@ -74,30 +89,50 @@ var pollChart;
                     totals['negative'] = 0;
                     totals['neutral'] = 0;
                     var terms = {};
+                      terms['positive']=[];
+                      terms['negative']=[];
+                      terms['mixed']=[];
+                      terms['neutral']=[];
+                    
+
+
+                    
                     for(var i=0; i < response.length; i++) {
                       if(response[i]['sentiment']['mixed']) {
-                        totals['mixed']++;
+                        terms['mixed'].push({'word':response[i]['text'],'wordCount': 0, 'relevance': response[i]['relevance']});;
                       } else {
-                        totals[response[i]['sentiment']['type']]++;
+                        terms[response[i]['sentiment']['type']].push({'word':response[i]['text'],'wordCount': 0, 'relevance': response[i]['relevance']});
                       }
-                      terms[response[i]['text']] = {'wordCount': 0, 'relevance': response[i]['relevance']};
                     }
 
-                    var total = totals['mixed'] + totals['positive'] + totals['negative'];
-                    piePositive = totals['positive']; //(totals['positive']/total * 100).toFixed(0);
-                    pieNegative = totals['negative'];//(totals['negative']/total * 100).toFixed(0);
-                    pieMixed = totals['negative']; //(totals['mixed']/total * 100).toFixed(0);
+                    $scope.terms = terms;
+
+                    alert($scope.terms.positive.length)
+                    var total = terms['mixed'].length + terms['positive'].length + terms['negative'].length;
+                    piePositive = terms['positive'].length; //(totals['positive']/total * 100).toFixed(0);
+                    pieNegative = terms['negative'].length;//(totals['negative']/total * 100).toFixed(0);
+                    pieMixed = terms['mixed'].length; //(totals['mixed']/total * 100).toFixed(0);
+                    
+                    //get percentage
+                    posPercentage = parseInt((piePositive/total)*100);
+                    negPercentage = parseInt((pieNegative/total)*100);
+                    mixedPercentage = parseInt((pieMixed/total)*100);
+
+                  $scope.posPercentage = posPercentage;
+                  $scope.negPercentage = negPercentage;
+                  $scope.mixedPercentage = 100 - (negPercentage+posPercentage);
+
+                    console.log("this is pos % "+posPercentage);
 
                     pollChart.series[0].setData([piePositive, pieNegative, pieMixed]);
 
                     // console.log('Stuff:' + piePositive + 'Neg: ' + pieNegative + ' Mixed: ' + pieMixed );
                     // console.log(total);
                     // console.log(totals);
-                    // console.log(terms);
+                    console.log($scope.terms);
                   });
 
                 })
-                
 
               }
 
@@ -129,6 +164,9 @@ var pollChart;
 
     $(document).ready(function() {
     	$('select').material_select();
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
   	});
          
 	function showPositive(){
@@ -174,7 +212,7 @@ var pollChart;
                 type: 'pie'
             },
             title: {
-                text: 'User Reviews Toward {Restaurant Name}'
+                text: 'Distribution of Keyword Connotations'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
