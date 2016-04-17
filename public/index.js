@@ -1,6 +1,6 @@
-var piePositive = 70.00;
-var pieNegative = 21.00;
-var pieMixed = 9.00;
+var piePositive = 33.00;
+var pieNegative = 33.00;
+var pieMixed = 33.00;
 var pollChart;	
           function randomString(length, chars) {
             var result = '';
@@ -84,30 +84,16 @@ var pollChart;
                     }
 
                     var total = totals['mixed'] + totals['positive'] + totals['negative'];
-                    piePositive = (totals['positive']/total * 100.00).toFixed(2);
-                    pieNegative = (totals['negative']/total * 100.00).toFixed(2);
-                    pieMixed = (totals['mixed']/total * 100.00).toFixed(2);
+                    piePositive = totals['positive']; //(totals['positive']/total * 100).toFixed(0);
+                    pieNegative = totals['negative'];//(totals['negative']/total * 100).toFixed(0);
+                    pieMixed = totals['negative']; //(totals['mixed']/total * 100).toFixed(0);
 
-                    pollChart.series[0].setData([{
-                    name: 'Positive',
-                    y: piePositive,
-                    color:'#00c853',
-                }, 
-                   {
-                    name: 'Negative',
-                    y: 10.00,
-                    color:'#ff5252'
-                    }, 
-                {
-                    name: 'Mixed',
-                    y: pieMixed,
-                    color:'#546e7a'
-                }], false);
+                    pollChart.series[0].setData([piePositive, pieNegative, pieMixed]);
 
-                    console.log('Stuff:' + piePositive + 'Neg: ' + pieNegative + ' Mixed: ' + pieMixed );
-                    console.log(total);
-                    console.log(totals);
-                    console.log(terms);
+                    // console.log('Stuff:' + piePositive + 'Neg: ' + pieNegative + ' Mixed: ' + pieMixed );
+                    // console.log(total);
+                    // console.log(totals);
+                    // console.log(terms);
                   });
 
                 })
@@ -223,7 +209,13 @@ var pollChart;
                         	fontSize:"20px"
                         }
                     },
-                    showInLegend: false
+                    showInLegend: false,
+                    colorByPoint: true,
+                    data: [
+                        ['Positive', piePositive],
+                        ['Negative', pieNegative],
+                        ['Mixed', pieMixed]
+                    ]
                 }
             },
             series: [{
