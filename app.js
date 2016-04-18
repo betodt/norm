@@ -21,8 +21,8 @@ var app = express();
 var server = require('http').createServer(app);
 
 //Create the AlchemyAPI object
-var AlchemyAPI = require('./alchemyapi');
-var alchemyapi = new AlchemyAPI();
+// var AlchemyAPI = require('./alchemyapi');
+// var alchemyapi = new AlchemyAPI();
 
 var myUrl = "";
 
