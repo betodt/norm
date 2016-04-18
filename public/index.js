@@ -63,7 +63,7 @@ var mixedPercentage;
                   }
 
                   $http({
-                    url: "http://localhost:3000",
+                    url: $location.path(),
                     method: "POST",
                     data: data,
                     dataType: 'jsonp'
