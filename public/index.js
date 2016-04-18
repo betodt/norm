@@ -63,7 +63,7 @@ var mixedPercentage;
                   }
 
                   $http({
-                    url: location.path(),
+                    url: location,
                     method: "POST",
                     data: data,
                     dataType: 'jsonp'
@@ -124,7 +124,7 @@ var mixedPercentage;
                   }
 
                   $http({
-                    url: location.path(),
+                    url: location,
                     method: "POST",
                     data: data,
                     dataType: 'jsonp'
