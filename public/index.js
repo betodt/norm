@@ -183,13 +183,13 @@ var mixedPercentage;
                   var url = "";
                   if(!givenUrl)
                   {
-                  url = 'http://api.yelp.com/v2/business/' + place + '-' + city;
+                  url = 'https://api.yelp.com/v2/business/' + place + '-' + city;
                   url = url.replace(/\s+/g, '-').toLowerCase();
                 }
                 else
                 {
                   var end = givenUrl.split("biz/")[1];
-                  url = 'http://api.yelp.com/v2/business/' + end;
+                  url = 'https://api.yelp.com/v2/business/' + end;
                   url = url.replace(/\s+/g, '-').toLowerCase();
 
                 }
