@@ -111,7 +111,7 @@ var mixedPercentage;
                 MyYelpAPI.retrieveYelp($scope.city, $scope.place, "", function(data) {
                   //  $scope.businesses = data.businesses;
                   $scope.name = data.name;
-                  var url = 'http://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
+                  var url = 'https://www.yelp.com/biz/' + $scope.place + '-' + $scope.city;
                   $scope.url = url.replace(/\s+/g, '-').toLowerCase();
                   $scope.city = data.location.city;
                   $scope.data = data;
